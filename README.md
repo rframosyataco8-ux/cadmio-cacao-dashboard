@@ -1,24 +1,27 @@
 # Dashboard de Cadmio en Cacao
 
-Dashboard interactivo de trazabilidad de **cadmio (mg/kg)** en productos de cacao de Exportadora Romex.
+Dashboard interactivo de trazabilidad de **cadmio (mg/kg)** en productos de cacao.
 
 ## Características
-
-- Gráficos de líneas (Chart.js) por cada tipo de producto
+- Gráficos de líneas (Chart.js) **uno por producto**
 - Diseño **Google Material Design**
 - Solo muestras con valor numérico de cadmio
-- Tooltip con lote, fecha y origen del grano
+- Tooltip: lote, fecha y origen del grano
 
-## Cómo ver
-
+## Cómo usar
 ```bash
 git clone https://github.com/rframosyataco8-ux/cadmio-cacao-dashboard.git
 cd cadmio-cacao-dashboard
-open index.html
+# Abre index.html en el navegador
 ```
 
-Abre `index.html` en cualquier navegador.
+## Datos incluidos
+| Producto | Muestras con Cd |
+|----------|-----------------|
+| Torta de Cacao | 129 |
+| Grano de Cacao | 93 |
+| Cacao en Polvo | 16 |
+| Torta de Cacao Alcalino | 4 |
+| Cacao Alcalino Reducido | 2 |
 
-## Fuente de datos
-
-Archivo de laboratorio: `Cd plaguicidas 02-09-26.xlsx` (datos 2026).
+Fuente: laboratorio 2026 (Exportadora Romex).
