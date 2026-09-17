@@ -66,8 +66,7 @@ footer{text-align:center;padding:12px;color:#888;font-size:.72rem}
 <footer>Trazabilidad Cadmio y Plaguicidas · Exportadora Romex · 2026</footer>
 <script src="https://cdn.jsdelivr.net/gh/rframosyataco8-ux/cadmio-cacao-dashboard@main/data.js"></script>
 <script>
-/* data.js must define const D = {...} */
-if(typeof D==="undefined"){document.body.innerHTML="<p style='padding:40px;font-family:Arial'>Error: no se cargaron los datos. Abre el archivo dashboard-completo.html descargado.</p>";}
+if(typeof D==="undefined"){document.body.innerHTML="<p style='padding:40px;font-family:Arial'>Cargando datos... Recarga en 10s o descarga el archivo completo del chat.</p>";}
 else{
 Chart.register(ChartDataLabels);
 const COL=["#1565c0","#c62828","#2e7d32","#ef6c00","#6a1b9a","#00838f","#ad1457","#558b2f"];
