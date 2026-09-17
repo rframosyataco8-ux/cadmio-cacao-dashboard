@@ -1,1 +1,609 @@
-<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Dashboard Cadmio</title><link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"><script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script><style>body{font-family:Roboto,sans-serif;background:#F5F5F5;margin:0} .app-bar{background:linear-gradient(135deg,#1B5E20,#003300);color:#fff;padding:16px 24px;display:flex;align-items:center;gap:16px} .container{max-width:1280px;margin:0 auto;padding:24px 16px} .stat-card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,.12);text-align:center} .chart-section{background:#fff;border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.12);margin-bottom:28px;overflow:hidden} .chart-body{height:340px;padding:16px 20px}</style></head><body><header class="app-bar"><span class="material-icons">science</span><div><h1>Trazabilidad de Cadmio en Cacao</h1><div>Datos 2026 · Exportadora Romex</div></div></header><main class="container"><div id="statsGrid" class="stats-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:32px"></div><div id="chartsContainer"></div></main><script>/* Full data and charts are in the complete version. Please use the file from the conversation artifacts or re-generate. */ document.getElementById('statsGrid').innerHTML='<p>El archivo completo con los 244 puntos de datos y gráficos Material Design está disponible. Clona el repo y reemplaza este archivo con el index.html completo generado (31 KB).</p>';</script></body></html>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard Cadmio & Plaguicidas — Cacao por Origen</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --bg: #0f1419;
+      --surface: #1a2332;
+      --surface2: #243044;
+      --border: #2d3a4f;
+      --text: #e7ecf3;
+      --muted: #8b9bb4;
+      --accent: #3b82f6;
+      --accent2: #10b981;
+      --warn: #f59e0b;
+      --danger: #ef4444;
+      --ok: #22c55e;
+      --radius: 12px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+    header {
+      background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 1.25rem 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    header h1 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    header h1 span { color: var(--accent); }
+    .subtitle { color: var(--muted); font-size: 0.85rem; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      padding: 0.35rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    main {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 1.5rem;
+    }
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .kpi {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.1rem 1.25rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .kpi::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--accent);
+    }
+    .kpi.ok::before { background: var(--ok); }
+    .kpi.warn::before { background: var(--warn); }
+    .kpi.danger::before { background: var(--danger); }
+    .kpi .label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+    .kpi .value { font-size: 1.75rem; font-weight: 700; margin-top: 0.25rem; }
+    .kpi .hint { font-size: 0.75rem; color: var(--muted); margin-top: 0.2rem; }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+    @media (max-width: 900px) {
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+    }
+    .card h2 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .card h2 .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .chart-wrap {
+      position: relative;
+      height: 320px;
+    }
+    .chart-wrap.tall { height: 380px; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+    th, td {
+      padding: 0.65rem 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    th {
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      position: sticky;
+      top: 0;
+      background: var(--surface);
+      cursor: pointer;
+      user-select: none;
+    }
+    th:hover { color: var(--text); }
+    tr:hover td { background: rgba(59,130,246,0.06); }
+    td.num { font-variant-numeric: tabular-nums; text-align: right; }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+      align-items: center;
+    }
+    .filters select, .filters input {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.45rem 0.75rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+    }
+    .filters label { font-size: 0.8rem; color: var(--muted); }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 0.75rem;
+    }
+    .legend span::before {
+      content: '';
+      display: inline-block;
+      width: 10px; height: 10px;
+      border-radius: 2px;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+    .leg-high::before { background: var(--danger); }
+    .leg-mid::before { background: var(--warn); }
+    .leg-low::before { background: var(--ok); }
+
+    .table-scroll {
+      max-height: 480px;
+      overflow: auto;
+      border-radius: 8px;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      color: var(--muted);
+      font-size: 0.75rem;
+      border-top: 1px solid var(--border);
+      margin-top: 2rem;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+    .pill-danger { background: rgba(239,68,68,0.2); color: #fca5a5; }
+    .pill-warn { background: rgba(245,158,11,0.2); color: #fcd34d; }
+    .pill-ok { background: rgba(34,197,94,0.2); color: #86efac; }
+
+    .note {
+      background: rgba(59,130,246,0.1);
+      border: 1px solid rgba(59,130,246,0.25);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 1.25rem;
+    }
+    .cd-high { color: var(--danger); font-weight: 600; }
+    .cd-mid { color: var(--warn); }
+    .cd-low { color: var(--ok); }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Cadmio & Plaguicidas — <span>Análisis por Origen</span></h1>
+      <div class="subtitle">Torta de cacao · Grano · Exportadora Romex · Datos 2026</div>
+    </div>
+    <div class="badge">Enfoque: Origen del grano (no por lote)</div>
+  </header>
+
+  <main>
+    <div class="note">
+      <strong>Criterio:</strong> Cada muestra de torta se atribuye a <em>todos</em> los orígenes que aparecen en su mezcla.
+      Así se identifica qué zonas aportan mayor carga de cadmio / plaguicidas.
+      Límite de referencia visual: <strong>0.80 mg/kg</strong> (bajo) · <strong>1.20 mg/kg</strong> (alto).
+    </div>
+
+    <div class="kpis" id="kpis"></div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h2><span class="dot"></span> Cadmio promedio por origen — Torta de cacao</h2>
+        <div class="chart-wrap tall"><canvas id="chartTorta"></canvas></div>
+        <div class="legend">
+          <span class="leg-high">≥ 1.20 mg/kg</span>
+          <span class="leg-mid">0.80 – 1.20</span>
+          <span class="leg-low">< 0.80 mg/kg</span>
+        </div>
+      </div>
+      <div class="card">
+        <h2><span class="dot" style="background:var(--accent2)"></span> Cadmio promedio por origen — Grano de cacao</h2>
+        <div class="chart-wrap tall"><canvas id="chartGrano"></canvas></div>
+        <div class="legend">
+          <span class="leg-high">≥ 0.60 mg/kg</span>
+          <span class="leg-mid">0.35 – 0.60</span>
+          <span class="leg-low">< 0.35 mg/kg</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h2><span class="dot" style="background:var(--warn)"></span> Detecciones de plaguicidas (Torta)</h2>
+        <div class="chart-wrap"><canvas id="chartPest"></canvas></div>
+      </div>
+      <div class="card">
+        <h2><span class="dot" style="background:var(--danger)"></span> Orígenes con mayor riesgo de cadmio (Torta)</h2>
+        <div class="chart-wrap"><canvas id="chartRisk"></canvas></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:1.5rem">
+      <h2><span class="dot"></span> Detalle por origen — Torta de cacao</h2>
+      <div class="filters">
+        <label>Buscar origen</label>
+        <input type="text" id="searchTorta" placeholder="Ej: Jaén, Ayacucho..." />
+        <label>Ordenar por</label>
+        <select id="sortTorta">
+          <option value="cd_promedio-desc">Cd promedio ↓</option>
+          <option value="cd_promedio-asc">Cd promedio ↑</option>
+          <option value="cd_max-desc">Cd máximo ↓</option>
+          <option value="n_muestras-desc">Nº muestras ↓</option>
+          <option value="origen-asc">Nombre A-Z</option>
+        </select>
+      </div>
+      <div class="table-scroll">
+        <table id="tableTorta">
+          <thead>
+            <tr>
+              <th>Origen</th>
+              <th>Nº muestras</th>
+              <th>Nº lotes</th>
+              <th>Cd prom.</th>
+              <th>Cd min</th>
+              <th>Cd máx</th>
+              <th>Cd mediana</th>
+              <th>Nivel</th>
+              <th>Plaguicidas (prom.)</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2><span class="dot" style="background:var(--accent2)"></span> Detalle por origen — Grano de cacao</h2>
+      <div class="filters">
+        <label>Buscar origen</label>
+        <input type="text" id="searchGrano" placeholder="Ej: Quillabamba..." />
+        <label>Ordenar por</label>
+        <select id="sortGrano">
+          <option value="cd_promedio-desc">Cd promedio ↓</option>
+          <option value="cd_promedio-asc">Cd promedio ↑</option>
+          <option value="n_muestras-desc">Nº muestras ↓</option>
+          <option value="origen-asc">Nombre A-Z</option>
+        </select>
+      </div>
+      <div class="table-scroll">
+        <table id="tableGrano">
+          <thead>
+            <tr>
+              <th>Origen</th>
+              <th>Nº muestras</th>
+              <th>Cd prom.</th>
+              <th>Cd min</th>
+              <th>Cd máx</th>
+              <th>Cd mediana</th>
+              <th>Nivel</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    Dashboard generado a partir de “Cd plaguicidas 02-09-26.xlsx” · Análisis agregado por origen del grano · Un solo archivo HTML
+  </footer>
+
+  <script>
+    const DATA = {"torta": [{"origen": "Bagua", "n_muestras": 4, "n_lotes": 4, "cd_promedio": 1.551, "cd_min": 0.87, "cd_max": 2.239, "cd_mediana": 1.547, "pesticidas_avg": {"2,4-D": 0.009}, "pesticidas_max": {"2,4-D": 0.009}, "tipo": "Torta"}, {"origen": "Tingo María", "n_muestras": 7, "n_lotes": 7, "cd_promedio": 1.174, "cd_min": 0.95, "cd_max": 1.48, "cd_mediana": 1.104, "pesticidas_avg": {"2,4-D": 0.0457, "Chlorpyrifos": 0.0297}, "pesticidas_max": {"2,4-D": 0.049, "Chlorpyrifos": 0.069}, "tipo": "Torta"}, {"origen": "Campo Verde", "n_muestras": 5, "n_lotes": 5, "cd_promedio": 1.126, "cd_min": 0.89, "cd_max": 1.45, "cd_mediana": 1.04, "pesticidas_avg": {"2,4-D": 0.0155, "Chlorpyrifos": 0.0275}, "pesticidas_max": {"2,4-D": 0.021, "Chlorpyrifos": 0.033}, "tipo": "Torta"}, {"origen": "Moyobamba", "n_muestras": 2, "n_lotes": 2, "cd_promedio": 1.025, "cd_min": 1.02, "cd_max": 1.03, "cd_mediana": 1.025, "pesticidas_avg": {"2,4-D": 0.013, "Chlorpyrifos": 0.025, "DEET": 0.0099}, "pesticidas_max": {"2,4-D": 0.013, "Chlorpyrifos": 0.027, "DEET": 0.0099}, "tipo": "Torta"}, {"origen": "Neshuya", "n_muestras": 30, "n_lotes": 30, "cd_promedio": 1.023, "cd_min": 0.64, "cd_max": 1.56, "cd_mediana": 1.03, "pesticidas_avg": {"Chlorpyrifos": 0.0485, "Cypermethrin": 0.009, "2,4-D": 0.0288, "DEET": 0.006}, "pesticidas_max": {"Chlorpyrifos": 0.155, "Cypermethrin": 0.012, "2,4-D": 0.098, "DEET": 0.006}, "tipo": "Torta"}, {"origen": "Jaén", "n_muestras": 83, "n_lotes": 80, "cd_promedio": 1.021, "cd_min": 0.41, "cd_max": 2.239, "cd_mediana": 1.01, "pesticidas_avg": {"2,4-D": 0.0221, "Chlorpyrifos": 0.0412, "Cypermethrin": 0.002, "DEET": 0.0068, "Fipronil": 0.0025, "Azoxystrobin": 0.005}, "pesticidas_max": {"2,4-D": 0.13, "Chlorpyrifos": 0.244, "Cypermethrin": 0.002, "DEET": 0.01, "Fipronil": 0.003, "Azoxystrobin": 0.005}, "tipo": "Torta"}, {"origen": "Caecam", "n_muestras": 1, "n_lotes": 1, "cd_promedio": 1.01, "cd_min": 1.01, "cd_max": 1.01, "cd_mediana": 1.01, "pesticidas_avg": {"2,4-D": 0.023, "Chlorpyrifos": 0.007}, "pesticidas_max": {"2,4-D": 0.023, "Chlorpyrifos": 0.007}, "tipo": "Torta"}, {"origen": "Juanjuí", "n_muestras": 23, "n_lotes": 22, "cd_promedio": 1.004, "cd_min": 0.79, "cd_max": 1.26, "cd_mediana": 1.0, "pesticidas_avg": {"2,4-D": 0.0168, "Chlorpyrifos": 0.0395, "Cypermethrin": 0.004, "Fipronil": 0.0025, "DEET": 0.0085}, "pesticidas_max": {"2,4-D": 0.045, "Chlorpyrifos": 0.139, "Cypermethrin": 0.004, "Fipronil": 0.003, "DEET": 0.01}, "tipo": "Torta"}, {"origen": "Pangoa", "n_muestras": 25, "n_lotes": 24, "cd_promedio": 0.988, "cd_min": 0.69, "cd_max": 1.363, "cd_mediana": 0.98, "pesticidas_avg": {"Chlorpyrifos": 0.0368, "Cypermethrin": 0.006, "2,4-D": 0.0185}, "pesticidas_max": {"Chlorpyrifos": 0.155, "Cypermethrin": 0.012, "2,4-D": 0.069}, "tipo": "Torta"}, {"origen": "Yurimaguas", "n_muestras": 8, "n_lotes": 8, "cd_promedio": 0.979, "cd_min": 0.89, "cd_max": 1.34, "cd_mediana": 0.925, "pesticidas_avg": {"2,4-D": 0.0225, "Chlorpyrifos": 0.0618, "Fipronil": 0.002, "DEET": 0.008}, "pesticidas_max": {"2,4-D": 0.045, "Chlorpyrifos": 0.209, "Fipronil": 0.002, "DEET": 0.008}, "tipo": "Torta"}, {"origen": "Chanchamayo", "n_muestras": 7, "n_lotes": 7, "cd_promedio": 0.974, "cd_min": 0.83, "cd_max": 1.39, "cd_mediana": 0.93, "pesticidas_avg": {"2,4-D": 0.0173, "Chlorpyrifos": 0.0117}, "pesticidas_max": {"2,4-D": 0.027, "Chlorpyrifos": 0.014}, "tipo": "Torta"}, {"origen": "Sisa", "n_muestras": 30, "n_lotes": 29, "cd_promedio": 0.972, "cd_min": 0.71, "cd_max": 1.56, "cd_mediana": 0.94, "pesticidas_avg": {"Chlorpyrifos": 0.0608, "2,4-D": 0.0236, "DEET": 0.0076, "Fipronil": 0.0025}, "pesticidas_max": {"Chlorpyrifos": 0.244, "2,4-D": 0.067, "DEET": 0.01, "Fipronil": 0.003}, "tipo": "Torta"}, {"origen": "Tarapoto", "n_muestras": 19, "n_lotes": 18, "cd_promedio": 0.965, "cd_min": 0.77, "cd_max": 1.24, "cd_mediana": 0.97, "pesticidas_avg": {"2,4-D": 0.0168, "Chlorpyrifos": 0.0225, "Cypermethrin": 0.0, "DEET": 0.0099}, "pesticidas_max": {"2,4-D": 0.031, "Chlorpyrifos": 0.062, "Cypermethrin": 0.0, "DEET": 0.0099}, "tipo": "Torta"}, {"origen": "Tocache", "n_muestras": 20, "n_lotes": 19, "cd_promedio": 0.962, "cd_min": 0.66, "cd_max": 1.39, "cd_mediana": 0.95, "pesticidas_avg": {"2,4-D": 0.0328, "Chlorpyrifos": 0.0556, "Fipronil": 0.0025, "DEET": 0.0077}, "pesticidas_max": {"2,4-D": 0.067, "Chlorpyrifos": 0.176, "Fipronil": 0.003, "DEET": 0.009}, "tipo": "Torta"}, {"origen": "Ayacucho", "n_muestras": 59, "n_lotes": 55, "cd_promedio": 0.949, "cd_min": 0.64, "cd_max": 1.785, "cd_mediana": 0.9, "pesticidas_avg": {"2,4-D": 0.0254, "Chlorpyrifos": 0.0396, "Cypermethrin": 0.002, "Fipronil": 0.0025, "DEET": 0.0067}, "pesticidas_max": {"2,4-D": 0.098, "Chlorpyrifos": 0.176, "Cypermethrin": 0.002, "Fipronil": 0.003, "DEET": 0.01}, "tipo": "Torta"}, {"origen": "Constitución", "n_muestras": 22, "n_lotes": 20, "cd_promedio": 0.884, "cd_min": 0.66, "cd_max": 1.19, "cd_mediana": 0.855, "pesticidas_avg": {"2,4-D": 0.0276, "Chlorpyrifos": 0.0493, "Fipronil": 0.0023, "DEET": 0.0068}, "pesticidas_max": {"2,4-D": 0.066, "Chlorpyrifos": 0.176, "Fipronil": 0.003, "DEET": 0.009}, "tipo": "Torta"}, {"origen": "Quillabamba", "n_muestras": 30, "n_lotes": 28, "cd_promedio": 0.782, "cd_min": 0.41, "cd_max": 1.31, "cd_mediana": 0.755, "pesticidas_avg": {"2,4-D": 0.0224, "Chlorpyrifos": 0.0258, "DEET": 0.0057, "Fipronil": 0.002}, "pesticidas_max": {"2,4-D": 0.074, "Chlorpyrifos": 0.128, "DEET": 0.008, "Fipronil": 0.002}, "tipo": "Torta"}], "grano": [{"origen": "Yurimaguas", "n_muestras": 3, "cd_promedio": 0.663, "cd_min": 0.44, "cd_max": 0.85, "cd_mediana": 0.7, "tipo": "Grano"}, {"origen": "Jaén", "n_muestras": 3, "cd_promedio": 0.63, "cd_min": 0.47, "cd_max": 0.86, "cd_mediana": 0.56, "tipo": "Grano"}, {"origen": "Juanjuí", "n_muestras": 2, "cd_promedio": 0.62, "cd_min": 0.53, "cd_max": 0.71, "cd_mediana": 0.62, "tipo": "Grano"}, {"origen": "Bagua", "n_muestras": 2, "cd_promedio": 0.6, "cd_min": 0.35, "cd_max": 0.85, "cd_mediana": 0.6, "tipo": "Grano"}, {"origen": "Pangoa", "n_muestras": 1, "cd_promedio": 0.59, "cd_min": 0.59, "cd_max": 0.59, "cd_mediana": 0.59, "tipo": "Grano"}, {"origen": "Campo Verde", "n_muestras": 13, "cd_promedio": 0.541, "cd_min": 0.44, "cd_max": 1.16, "cd_mediana": 0.5, "tipo": "Grano"}, {"origen": "Constitución", "n_muestras": 3, "cd_promedio": 0.537, "cd_min": 0.47, "cd_max": 0.65, "cd_mediana": 0.49, "tipo": "Grano"}, {"origen": "Neshuya", "n_muestras": 9, "cd_promedio": 0.522, "cd_min": 0.41, "cd_max": 0.76, "cd_mediana": 0.49, "tipo": "Grano"}, {"origen": "Tarapoto", "n_muestras": 3, "cd_promedio": 0.5, "cd_min": 0.33, "cd_max": 0.62, "cd_mediana": 0.55, "tipo": "Grano"}, {"origen": "Sisa", "n_muestras": 3, "cd_promedio": 0.407, "cd_min": 0.31, "cd_max": 0.48, "cd_mediana": 0.43, "tipo": "Grano"}, {"origen": "Yarina", "n_muestras": 5, "cd_promedio": 0.376, "cd_min": 0.35, "cd_max": 0.41, "cd_mediana": 0.37, "tipo": "Grano"}, {"origen": "Ayacucho", "n_muestras": 24, "cd_promedio": 0.344, "cd_min": 0.21, "cd_max": 0.66, "cd_mediana": 0.33, "tipo": "Grano"}, {"origen": "Tocache", "n_muestras": 2, "cd_promedio": 0.3, "cd_min": 0.3, "cd_max": 0.3, "cd_mediana": 0.3, "tipo": "Grano"}, {"origen": "Quillabamba", "n_muestras": 8, "cd_promedio": 0.175, "cd_min": 0.1, "cd_max": 0.42, "cd_mediana": 0.145, "tipo": "Grano"}], "overall": {"torta_n": 144, "torta_cd_mean": 0.999, "torta_cd_median": 0.997, "torta_cd_max": 2.239, "torta_cd_min": 0.41, "grano_n": 85, "grano_cd_mean": 0.421}, "pests": {"2,4-D": 29, "Chlorpyrifos": 84, "Cypermethrin": 6, "Fipronil": 5, "DEET": 7}};
+
+    function cdClass(v, high = 1.2, mid = 0.8) {
+      if (v >= high) return 'cd-high';
+      if (v >= mid) return 'cd-mid';
+      return 'cd-low';
+    }
+    function cdPill(v, high = 1.2, mid = 0.8) {
+      if (v >= high) return '<span class="pill pill-danger">Alto</span>';
+      if (v >= mid) return '<span class="pill pill-warn">Medio</span>';
+      return '<span class="pill pill-ok">Bajo</span>';
+    }
+    function pestStr(obj) {
+      if (!obj || !Object.keys(obj).length) return '—';
+      return Object.entries(obj).map(([k, v]) => k + ': ' + v).join(' · ');
+    }
+    function colorForCd(v) {
+      if (v >= 1.2) return '#ef4444';
+      if (v >= 0.8) return '#f59e0b';
+      return '#22c55e';
+    }
+
+    const ov = DATA.overall;
+    const highOrigins = DATA.torta.filter(o => o.cd_promedio >= 1.2).length;
+    document.getElementById('kpis').innerHTML = `
+      <div class="kpi">
+        <div class="label">Muestras Torta</div>
+        <div class="value">${ov.torta_n}</div>
+        <div class="hint">con cadmio medido</div>
+      </div>
+      <div class="kpi">
+        <div class="label">Cd promedio Torta</div>
+        <div class="value">${ov.torta_cd_mean}</div>
+        <div class="hint">mg/kg · mediana ${ov.torta_cd_median}</div>
+      </div>
+      <div class="kpi ${ov.torta_cd_max >= 1.5 ? 'danger' : 'warn'}">
+        <div class="label">Cd máximo Torta</div>
+        <div class="value">${ov.torta_cd_max}</div>
+        <div class="hint">mg/kg</div>
+      </div>
+      <div class="kpi ok">
+        <div class="label">Muestras Grano</div>
+        <div class="value">${ov.grano_n}</div>
+        <div class="hint">Cd prom. ${ov.grano_cd_mean} mg/kg</div>
+      </div>
+      <div class="kpi ${highOrigins > 0 ? 'danger' : 'ok'}">
+        <div class="label">Orígenes alto Cd</div>
+        <div class="value">${highOrigins}</div>
+        <div class="hint">promedio ≥ 1.20 mg/kg</div>
+      </div>
+      <div class="kpi warn">
+        <div class="label">Detecciones Chlorpyrifos</div>
+        <div class="value">${DATA.pests['Chlorpyrifos'] || 0}</div>
+        <div class="hint">en muestras de torta</div>
+      </div>
+    `;
+
+    Chart.defaults.color = '#8b9bb4';
+    Chart.defaults.borderColor = '#2d3a4f';
+    Chart.defaults.font.family = "'Segoe UI', system-ui, sans-serif";
+
+    const tortaLabels = DATA.torta.map(d => d.origen);
+    const tortaValues = DATA.torta.map(d => d.cd_promedio);
+    const tortaColors = tortaValues.map(colorForCd);
+    new Chart(document.getElementById('chartTorta'), {
+      type: 'bar',
+      data: {
+        labels: tortaLabels,
+        datasets: [{
+          label: 'Cd promedio (mg/kg)',
+          data: tortaValues,
+          backgroundColor: tortaColors,
+          borderRadius: 4,
+          maxBarThickness: 28
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              afterLabel: (ctx) => {
+                const d = DATA.torta[ctx.dataIndex];
+                return ['n = ' + d.n_muestras + ' muestras', 'máx = ' + d.cd_max, 'mín = ' + d.cd_min];
+              }
+            }
+          }
+        },
+        scales: {
+          x: { beginAtZero: true, title: { display: true, text: 'mg/kg' }, grid: { color: 'rgba(45,58,79,0.5)' } },
+          y: { grid: { display: false } }
+        }
+      }
+    });
+
+    const granoLabels = DATA.grano.map(d => d.origen);
+    const granoValues = DATA.grano.map(d => d.cd_promedio);
+    const granoColors = granoValues.map(v => v >= 0.6 ? '#ef4444' : v >= 0.35 ? '#f59e0b' : '#22c55e');
+    new Chart(document.getElementById('chartGrano'), {
+      type: 'bar',
+      data: {
+        labels: granoLabels,
+        datasets: [{
+          label: 'Cd promedio (mg/kg)',
+          data: granoValues,
+          backgroundColor: granoColors,
+          borderRadius: 4,
+          maxBarThickness: 28
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              afterLabel: (ctx) => {
+                const d = DATA.grano[ctx.dataIndex];
+                return ['n = ' + d.n_muestras, 'máx = ' + d.cd_max, 'mín = ' + d.cd_min];
+              }
+            }
+          }
+        },
+        scales: {
+          x: { beginAtZero: true, title: { display: true, text: 'mg/kg' }, grid: { color: 'rgba(45,58,79,0.5)' } },
+          y: { grid: { display: false } }
+        }
+      }
+    });
+
+    const pestLabels = Object.keys(DATA.pests);
+    const pestValues = Object.values(DATA.pests);
+    new Chart(document.getElementById('chartPest'), {
+      type: 'doughnut',
+      data: {
+        labels: pestLabels,
+        datasets: [{
+          data: pestValues,
+          backgroundColor: ['#3b82f6', '#ef4444', '#f59e0b', '#8b5cf6', '#10b981', '#ec4899'],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'right', labels: { boxWidth: 12, padding: 12 } }
+        }
+      }
+    });
+
+    const riskData = [...DATA.torta].sort((a, b) => b.cd_max - a.cd_max).slice(0, 8);
+    new Chart(document.getElementById('chartRisk'), {
+      type: 'bar',
+      data: {
+        labels: riskData.map(d => d.origen),
+        datasets: [
+          {
+            label: 'Cd máximo',
+            data: riskData.map(d => d.cd_max),
+            backgroundColor: '#ef4444',
+            borderRadius: 4,
+            maxBarThickness: 22
+          },
+          {
+            label: 'Cd promedio',
+            data: riskData.map(d => d.cd_promedio),
+            backgroundColor: '#f59e0b',
+            borderRadius: 4,
+            maxBarThickness: 22
+          }
+        ]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { position: 'top' } },
+        scales: {
+          x: { beginAtZero: true, title: { display: true, text: 'mg/kg' }, grid: { color: 'rgba(45,58,79,0.5)' } },
+          y: { grid: { display: false } }
+        }
+      }
+    });
+
+    function renderTorta(list) {
+      const tbody = document.querySelector('#tableTorta tbody');
+      tbody.innerHTML = list.map(d => `
+        <tr>
+          <td><strong>${d.origen}</strong></td>
+          <td class="num">${d.n_muestras}</td>
+          <td class="num">${d.n_lotes}</td>
+          <td class="num ${cdClass(d.cd_promedio)}">${d.cd_promedio.toFixed(3)}</td>
+          <td class="num">${d.cd_min.toFixed(3)}</td>
+          <td class="num ${cdClass(d.cd_max)}">${d.cd_max.toFixed(3)}</td>
+          <td class="num">${d.cd_mediana.toFixed(3)}</td>
+          <td>${cdPill(d.cd_promedio)}</td>
+          <td style="font-size:0.78rem;color:var(--muted)">${pestStr(d.pesticidas_avg)}</td>
+        </tr>
+      `).join('');
+    }
+
+    function renderGrano(list) {
+      const tbody = document.querySelector('#tableGrano tbody');
+      tbody.innerHTML = list.map(d => `
+        <tr>
+          <td><strong>${d.origen}</strong></td>
+          <td class="num">${d.n_muestras}</td>
+          <td class="num ${cdClass(d.cd_promedio, 0.6, 0.35)}">${d.cd_promedio.toFixed(3)}</td>
+          <td class="num">${d.cd_min.toFixed(3)}</td>
+          <td class="num ${cdClass(d.cd_max, 0.6, 0.35)}">${d.cd_max.toFixed(3)}</td>
+          <td class="num">${d.cd_mediana.toFixed(3)}</td>
+          <td>${cdPill(d.cd_promedio, 0.6, 0.35)}</td>
+        </tr>
+      `).join('');
+    }
+
+    function sortList(list, key) {
+      const [field, dir] = key.split('-');
+      return [...list].sort((a, b) => {
+        let va = a[field], vb = b[field];
+        if (typeof va === 'string') {
+          return dir === 'asc' ? va.localeCompare(vb) : vb.localeCompare(va);
+        }
+        return dir === 'asc' ? va - vb : vb - va;
+      });
+    }
+
+    function filterAndRenderTorta() {
+      const q = document.getElementById('searchTorta').value.toLowerCase();
+      const sort = document.getElementById('sortTorta').value;
+      let list = DATA.torta.filter(d => d.origen.toLowerCase().includes(q));
+      list = sortList(list, sort);
+      renderTorta(list);
+    }
+    function filterAndRenderGrano() {
+      const q = document.getElementById('searchGrano').value.toLowerCase();
+      const sort = document.getElementById('sortGrano').value;
+      let list = DATA.grano.filter(d => d.origen.toLowerCase().includes(q));
+      list = sortList(list, sort);
+      renderGrano(list);
+    }
+
+    document.getElementById('searchTorta').addEventListener('input', filterAndRenderTorta);
+    document.getElementById('sortTorta').addEventListener('change', filterAndRenderTorta);
+    document.getElementById('searchGrano').addEventListener('input', filterAndRenderGrano);
+    document.getElementById('sortGrano').addEventListener('change', filterAndRenderGrano);
+
+    filterAndRenderTorta();
+    filterAndRenderGrano();
+  </script>
+</body>
+</html>
