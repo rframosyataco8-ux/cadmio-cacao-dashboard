@@ -64,7 +64,38 @@ footer{text-align:center;padding:12px;color:#888;font-size:.72rem}
 </div>
 </main>
 <footer>Trazabilidad Cadmio y Plaguicidas · Exportadora Romex · 2026</footer>
+<script src="https://cdn.jsdelivr.net/gh/rframosyataco8-ux/cadmio-cacao-dashboard@main/data.js"></script>
 <script>
+/* data.js must define const D = {...} */
+if(typeof D==="undefined"){document.body.innerHTML="<p style='padding:40px;font-family:Arial'>Error: no se cargaron los datos. Abre el archivo dashboard-completo.html descargado.</p>";}
+else{
 Chart.register(ChartDataLabels);
-const D={"NEED_DATA":true};
+const COL=["#1565c0","#c62828","#2e7d32","#ef6c00","#6a1b9a","#00838f","#ad1457","#558b2f"];
+const C=D.ct;
+document.getElementById("k").innerHTML=[["torta","Torta"],["grano","Grano"],["alcalino","Alcalino"],["polvo","Polvo"],["cacao_alc","C.Alc"],["trozada","Trozada"]].map(function(p){return '<div class="kpi"><div style="font-size:.7rem;color:#666">'+p[1]+'</div><div class="v">'+C[p[0]]+'</div></div>'}).join("");
+Chart.defaults.font.family="Arial,Calibri,sans-serif";Chart.defaults.font.size=11;Chart.defaults.color="#444";
+function cc(v,h,m){return v>=h?"#c62828":v>=m?"#ef6c00":"#2e7d32"}
+function hb(id,L,V,cols,xt){return new Chart(document.getElementById(id),{type:"bar",data:{labels:L,datasets:[{data:V,backgroundColor:cols||V.map(function(v){return cc(v,1.2,.8)}),borderWidth:0,borderRadius:2,maxBarThickness:14}]},options:{indexAxis:"y",responsive:true,maintainAspectRatio:false,layout:{padding:{right:40}},plugins:{legend:{display:false},datalabels:{color:"#222",anchor:"end",align:"right",offset:3,font:{weight:"700",size:10},formatter:function(v){return typeof v==="number"?v.toFixed(2):v}}},scales:{x:{beginAtZero:true,grid:{color:"#eee"},title:{display:true,text:xt||"Cd (mg/kg)",font:{weight:"600"}}},y:{grid:{display:false},ticks:{font:{size:9}}}}}})}
+function lc(id,L,ds){return new Chart(document.getElementById(id),{type:"line",data:{labels:L,datasets:ds},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:"index",intersect:false},plugins:{legend:{display:ds.length>1,position:"top"},datalabels:{display:function(c){return c.dataset.data.length<=15},align:"top",font:{weight:"700",size:9},formatter:function(v){return typeof v==="number"?v.toFixed(2):v}}},scales:{y:{beginAtZero:true,grid:{color:"#eee"},title:{display:true,text:"Cd (mg/kg)"}},x:{grid:{display:false},ticks:{font:{size:8}}}}}})}
+hb("a1",D.tt.map(function(d){return d.l}),D.tt.map(function(d){return d.c}));
+hb("a2",D.to.map(function(d){return d.o}),D.to.map(function(d){return d.a}));
+document.getElementById("tb1").innerHTML=D.to.map(function(d){var c=d.a>=1.2?"hi":d.a>=.8?"mid":"lo";return "<tr><td><b>"+d.o+"</b></td><td class=n>"+d.n+"</td><td class='n "+c+"'>"+d.a.toFixed(3)+"</td><td class=n>"+d.mi.toFixed(2)+"</td><td class=n>"+d.ma.toFixed(2)+"</td></tr>"}).join("");
+var mode="s",sel=[],gCh=null;
+function bz(){var b=document.getElementById("zb");b.innerHTML="";D.go.forEach(function(o){var s=D.gs[o],btn=document.createElement("button");btn.type="button";btn.textContent=o+" ("+s.n+")";btn.dataset.o=o;btn.onclick=function(){oz(o,btn)};b.appendChild(btn)})}
+function oz(o,btn){if(mode==="s"){sel=[o];document.querySelectorAll("#zb button").forEach(function(b){b.className=b.dataset.o===o?"on":""});rg()}else{var i=sel.indexOf(o);if(i>=0){sel.splice(i,1);btn.className=""}else{if(sel.length>=6){alert("Max 6");return}sel.push(o);btn.className="cmp"}rg()}}
+function rg(){var info=document.getElementById("gi");if(gCh){gCh.destroy();gCh=null}if(!sel.length){info.textContent="Seleccione";gCh=lc("a3",[],[{data:[],borderColor:"#ccc"}]);return}
+if(mode==="s"){var o=sel[0],s=D.gs[o];info.textContent=o+" n="+s.n+" prom="+s.a;var labs=[];for(var i=0;i<s.c.length;i++)labs.push("M"+(i+1));gCh=lc("a3",labs,[{label:o,data:s.c,borderColor:"#1565c0",backgroundColor:"rgba(21,101,192,.1)",borderWidth:2,pointRadius:3,tension:.2,fill:true}])}
+else{var mx=0;sel.forEach(function(o){mx=Math.max(mx,D.gs[o].c.length)});var labs=[];for(var i=0;i<mx;i++)labs.push("M"+(i+1));
+var ds=sel.map(function(o,i){var s=D.gs[o],d=s.c.slice();while(d.length<mx)d.push(null);return{label:o+"("+s.n+")",data:d,borderColor:COL[i%COL.length],borderWidth:2,pointRadius:3,tension:.2,spanGaps:true}});
+info.textContent="Comparando "+sel.length;gCh=lc("a3",labs,ds)}}
+document.getElementById("ms").onclick=function(){mode="s";this.className="on";document.getElementById("mc").className="";document.getElementById("gh").textContent="Clic en una zona para ver grafico de linea.";sel=[];document.querySelectorAll("#zb button").forEach(function(b){b.className=""});if(D.go[0]){sel=[D.go[0]];var f=document.querySelector('#zb button[data-o="'+D.go[0]+'"]');if(f)f.className="on"}rg()};
+document.getElementById("mc").onclick=function(){mode="c";this.className="on";document.getElementById("ms").className="";document.getElementById("gh").textContent="Seleccione 2 a 6 origenes para comparar.";sel=[];document.querySelectorAll("#zb button").forEach(function(b){b.className=""});rg()};
+bz();if(D.go[0]){sel=[D.go[0]];var f=document.querySelector('#zb button[data-o="'+D.go[0]+'"]');if(f)f.className="on";rg()}
+hb("a4",D.al.map(function(d){return d.l}),D.al.map(function(d){return d.c}));
+new Chart(document.getElementById("a5"),{type:"bar",data:{labels:D.po.map(function(d){return d.l}),datasets:[{data:D.po.map(function(d){return d.c}),backgroundColor:D.po.map(function(d){return cc(d.c,1.1,.9)}),borderWidth:0,borderRadius:2,maxBarThickness:32}]},options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:20}},plugins:{legend:{display:false},datalabels:{anchor:"end",align:"top",font:{weight:"700",size:10},formatter:function(v){return v.toFixed(2)}}},scales:{y:{beginAtZero:true,title:{display:true,text:"Cd (mg/kg)"}},x:{ticks:{maxRotation:45,font:{size:9}}}}}});
+hb("a6",D.ca.map(function(d){return d.l}),D.ca.map(function(d){return d.c}));
+hb("a7",D.tr.map(function(d){return d.l}),D.tr.map(function(d){return d.t}),D.tr.map(function(d){return d.t>0?"#c62828":"#90a4ae"}),"Suma plaguicidas");
+document.getElementById("tb2").innerHTML=D.tr.map(function(d){return "<tr><td>"+d.l+"</td><td>"+d.p+"</td><td class=n>"+d.t.toFixed(4)+"</td></tr>"}).join("");
+document.querySelectorAll(".tab").forEach(function(btn){btn.onclick=function(){document.querySelectorAll(".tab").forEach(function(b){b.className="tab"});document.querySelectorAll(".panel").forEach(function(p){p.className="panel"});btn.className="tab on";document.getElementById("p-"+btn.dataset.p).className="panel on"}});
+}
 </script></body></html>
