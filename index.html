@@ -1,38 +1,22 @@
-<!DOCTYPE html>
-<html lang="es"><head>
-<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Trazabilidad Cadmio Cacao - Romex</title>
+<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>Trazabilidad Cadmio Cacao - Romex</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Arial,Calibri,sans-serif;background:#f0f2f5;color:#1a1a1a}
-header{background:linear-gradient(135deg,#1B5E20,#003300);color:#fff;padding:14px 20px}
-header h1{font-size:1.3rem}header .sub{font-size:.85rem;opacity:.85;margin-top:2px}
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:Arial,Calibri,sans-serif;background:#f0f2f5;color:#1a1a1a}
+header{background:linear-gradient(135deg,#1B5E20,#003300);color:#fff;padding:14px 20px}header h1{font-size:1.3rem}header .sub{font-size:.85rem;opacity:.85;margin-top:2px}
 main{max-width:1240px;margin:0 auto;padding:16px}
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-bottom:14px}
-.kpi{background:#fff;border-radius:8px;padding:12px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.1)}
-.kpi .v{font-size:1.35rem;font-weight:700;color:#1B5E20}
+.kpi{background:#fff;border-radius:8px;padding:12px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.1)}.kpi .v{font-size:1.35rem;font-weight:700;color:#1B5E20}
 .tabs{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:14px;border-bottom:2px solid #ddd}
-.tab{font:600 .82rem Arial,sans-serif;padding:9px 12px;border:0;background:0;border-bottom:3px solid transparent;color:#555;cursor:pointer;margin-bottom:-2px}
-.tab.on{color:#1B5E20;border-bottom-color:#1B5E20}
+.tab{font:600 .82rem Arial,sans-serif;padding:9px 12px;border:0;background:0;border-bottom:3px solid transparent;color:#555;cursor:pointer;margin-bottom:-2px}.tab.on{color:#1B5E20;border-bottom-color:#1B5E20}
 .panel{display:none}.panel.on{display:block}
-.card{background:#fff;border-radius:10px;padding:14px;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,.1)}
-.card h2{font-size:.95rem;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #eee}
+.card{background:#fff;border-radius:10px;padding:14px;margin-bottom:14px;box-shadow:0 1px 3px rgba(0,0,0,.1)}.card h2{font-size:.95rem;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid #eee}
 .cb{position:relative;width:100%;height:380px}.cb.t{height:500px}
-table{width:100%;border-collapse:collapse;font-size:.82rem}th,td{padding:6px 8px;border-bottom:1px solid #eee;text-align:left}
-th{background:#f7f7f7;font-size:.72rem;text-transform:uppercase}td.n{text-align:right}
-.hi{color:#c62828;font-weight:700}.mid{color:#ef6c00}.lo{color:#2e7d32}.sin{color:#888;font-style:italic}
-.scroll{max-height:300px;overflow:auto}
-.zb{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
-.zb button{font:600 .76rem Arial,sans-serif;padding:6px 10px;border:1px solid #ccc;background:#fff;border-radius:5px;cursor:pointer}
-.zb button.on{background:#1B5E20;color:#fff;border-color:#1B5E20}
-.zb button.cmp{background:#1565c0;color:#fff;border-color:#1565c0}
-.mt{display:flex;gap:8px;margin-bottom:8px;align-items:center;flex-wrap:wrap}
-.mt button{font:600 .76rem Arial,sans-serif;padding:6px 12px;border:1px solid #ccc;background:#fff;border-radius:5px;cursor:pointer}
-.mt button.on{background:#1B5E20;color:#fff}
-.hint{font-size:.78rem;color:#666;margin-bottom:8px}
-.chip{background:#e8f5e9;color:#1B5E20;padding:3px 8px;border-radius:4px;font-size:.78rem;font-weight:600}
+table{width:100%;border-collapse:collapse;font-size:.82rem}th,td{padding:6px 8px;border-bottom:1px solid #eee;text-align:left}th{background:#f7f7f7;font-size:.72rem;text-transform:uppercase}td.n{text-align:right}
+.hi{color:#c62828;font-weight:700}.mid{color:#ef6c00}.lo{color:#2e7d32}.sin{color:#888;font-style:italic}.scroll{max-height:300px;overflow:auto}
+.zb{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}.zb button{font:600 .76rem Arial,sans-serif;padding:6px 10px;border:1px solid #ccc;background:#fff;border-radius:5px;cursor:pointer}.zb button.on{background:#1B5E20;color:#fff;border-color:#1B5E20}.zb button.cmp{background:#1565c0;color:#fff;border-color:#1565c0}
+.mt{display:flex;gap:8px;margin-bottom:8px;align-items:center;flex-wrap:wrap}.mt button{font:600 .76rem Arial,sans-serif;padding:6px 12px;border:1px solid #ccc;background:#fff;border-radius:5px;cursor:pointer}.mt button.on{background:#1B5E20;color:#fff}
+.hint{font-size:.78rem;color:#666;margin-bottom:8px}.chip{background:#e8f5e9;color:#1B5E20;padding:3px 8px;border-radius:4px;font-size:.78rem;font-weight:600}
 footer{text-align:center;padding:12px;color:#888;font-size:.72rem}
 </style></head><body>
 <header><h1>Trazabilidad de Cadmio en Cacao</h1><div class="sub">Datos 2026 · Exportadora Romex · 6 productos</div></header>
@@ -57,7 +41,7 @@ footer{text-align:center;padding:12px;color:#888;font-size:.72rem}
 <div class="mt"><span style="font-weight:600;font-size:.82rem">Modo:</span>
 <button class="on" id="ms" type="button">Una zona</button>
 <button id="mc" type="button">Comparar zonas</button></div>
-<p class="hint" id="gh">Clic en una zona. Barras + línea (desmarque en la leyenda para ver solo línea).</p>
+<p class="hint" id="gh">Clic en una zona. Barras + línea (desmarque en leyenda para ver solo línea).</p>
 <div class="zb" id="zb"></div>
 <div class="cb t"><canvas id="a3"></canvas></div></div>
 <div class="card"><h2>Datos de la zona seleccionada</h2><div class="scroll"><table><thead><tr><th>Lote</th><th>Cd (mg/kg)</th></tr></thead><tbody id="tbG"></tbody></table></div></div>
@@ -82,43 +66,43 @@ footer{text-align:center;padding:12px;color:#888;font-size:.72rem}
 </div>
 </main>
 <footer>Trazabilidad Cadmio y Plaguicidas · Exportadora Romex · 2026</footer>
-<script src="https://cdn.jsdelivr.net/gh/rframosyataco8-ux/cadmio-cacao-dashboard@main/data.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/rframosyataco8-ux/cadmio-cacao-dashboard@main/data.js?v=4"></script>
 <script>
-if(typeof D==="undefined"){document.body.innerHTML="<p style='padding:40px;font-family:Arial'>Cargando datos... Recarga en unos segundos.</p>";}
-else{
+function start(){
+if(typeof D==="undefined"){document.getElementById("k").innerHTML="<p style='padding:16px;color:#c62828;font-family:Arial'>Cargando datos… Espera 10s y recarga (Ctrl+F5). O descarga dashboard-completo.html del chat.</p>";return;}
 Chart.register(ChartDataLabels);
 const COL=["#1565c0","#c62828","#2e7d32","#ef6c00","#6a1b9a","#00838f","#ad1457","#558b2f"];
-const C=D.ct;
-document.getElementById("k").innerHTML=[["torta","Torta"],["grano","Grano"],["alcalino","Alcalino"],["polvo","Polvo"],["cacao_alc","C.Alc"],["trozada","Trozada"]].map(function(p){return '<div class="kpi"><div style="font-size:.7rem;color:#666">'+p[1]+'</div><div class="v">'+C[p[0]]+'</div></div>'}).join("");
+const C=D.ct||{};
+document.getElementById("k").innerHTML=[["torta","Torta"],["grano","Grano"],["alcalino","Alcalino"],["polvo","Polvo"],["cacao_alc","C.Alc"],["trozada","Trozada"]].map(function(p){return '<div class="kpi"><div style="font-size:.7rem;color:#666">'+p[1]+'</div><div class="v">'+(C[p[0]]||0)+'</div></div>'}).join("");
 Chart.defaults.font.family="Arial,Calibri,sans-serif";Chart.defaults.font.size=11;Chart.defaults.color="#444";
 function cc(v,h,m){return v>=h?"#c62828":v>=m?"#ef6c00":"#2e7d32"}
-function hb(id,L,V,cols,xt){return new Chart(document.getElementById(id),{type:"bar",data:{labels:L,datasets:[{data:V,backgroundColor:cols||V.map(function(v){return v==null?"#bdbdbd":cc(v,1.2,.8)}),borderWidth:0,borderRadius:2,maxBarThickness:14}]},options:{indexAxis:"y",responsive:true,maintainAspectRatio:false,layout:{padding:{right:44}},plugins:{legend:{display:false},datalabels:{color:"#222",anchor:"end",align:"right",offset:3,font:{weight:"700",size:10},formatter:function(v){return v==null?"S/M":(typeof v==="number"?v.toFixed(2):v)}}},scales:{x:{beginAtZero:true,grid:{color:"#eee"},title:{display:true,text:xt||"Cd (mg/kg)",font:{weight:"600"}}},y:{grid:{display:false},ticks:{font:{size:9}}}}}})}
-hb("a1",D.tt.map(function(d){return d.l}),D.tt.map(function(d){return d.c}));
-hb("a2",D.to.map(function(d){return d.o}),D.to.map(function(d){return d.a}));
-document.getElementById("tbT").innerHTML=(D.tt_all||D.tt).map(function(d){var v=d.c==null||d.c==="—"?'<span class="sin">'+(d.sin?"Sin muestra":"Sin resultado")+'</span>':d.c;return "<tr><td>"+d.l+"</td><td class=n>"+v+"</td></tr>"}).join("");
-document.getElementById("tbTO").innerHTML=D.to.map(function(d){var c=d.a>=1.2?"hi":d.a>=.8?"mid":"lo";return "<tr><td><b>"+d.o+"</b></td><td class=n>"+d.n+"</td><td class='n "+c+"'>"+d.a.toFixed(3)+"</td><td class=n>"+d.mi.toFixed(2)+"</td><td class=n>"+d.ma.toFixed(2)+"</td></tr>"}).join("");
+function hb(id,L,V,cols,xt){var el=document.getElementById(id);if(!el)return;return new Chart(el,{type:"bar",data:{labels:L,datasets:[{data:V,backgroundColor:cols||V.map(function(v){return v==null?"#bdbdbd":cc(v,1.2,.8)}),borderWidth:0,borderRadius:2,maxBarThickness:14}]},options:{indexAxis:"y",responsive:true,maintainAspectRatio:false,layout:{padding:{right:44}},plugins:{legend:{display:false},datalabels:{color:"#222",anchor:"end",align:"right",offset:3,font:{weight:"700",size:10},formatter:function(v){return v==null?"S/M":(typeof v==="number"?v.toFixed(2):v)}}},scales:{x:{beginAtZero:true,grid:{color:"#eee"},title:{display:true,text:xt||"Cd (mg/kg)",font:{weight:"600"}}},y:{grid:{display:false},ticks:{font:{size:9}}}}}})}
+if(D.tt)hb("a1",D.tt.map(function(d){return d.l}),D.tt.map(function(d){return d.c}));
+if(D.to)hb("a2",D.to.map(function(d){return d.o}),D.to.map(function(d){return d.a}));
+var tbT=document.getElementById("tbT");if(tbT)tbT.innerHTML=(D.tt_all||D.tt||[]).map(function(d){var v=d.c==null||d.c==="—"?'<span class="sin">'+(d.sin?"Sin muestra":"Sin resultado")+'</span>':d.c;return "<tr><td>"+d.l+"</td><td class=n>"+v+"</td></tr>"}).join("");
+var tbTO=document.getElementById("tbTO");if(tbTO&&D.to)tbTO.innerHTML=D.to.map(function(d){var c=d.a>=1.2?"hi":d.a>=.8?"mid":"lo";return "<tr><td><b>"+d.o+"</b></td><td class=n>"+d.n+"</td><td class='n "+c+"'>"+d.a.toFixed(3)+"</td><td class=n>"+d.mi.toFixed(2)+"</td><td class=n>"+d.ma.toFixed(2)+"</td></tr>"}).join("");
 var mode="s",sel=[],gCh=null;
-function bz(){var b=document.getElementById("zb");b.innerHTML="";D.go.forEach(function(o){if(!D.gs[o])return;var s=D.gs[o],btn=document.createElement("button");btn.type="button";btn.textContent=o+" ("+s.n+")";btn.dataset.o=o;btn.onclick=function(){oz(o,btn)};b.appendChild(btn)})}
+function bz(){var b=document.getElementById("zb");if(!b||!D.go)return;b.innerHTML="";D.go.forEach(function(o){if(!D.gs||!D.gs[o])return;var s=D.gs[o],btn=document.createElement("button");btn.type="button";btn.textContent=o+" ("+s.n+")";btn.dataset.o=o;btn.onclick=function(){oz(o,btn)};b.appendChild(btn)})}
 function oz(o,btn){if(mode==="s"){sel=[o];document.querySelectorAll("#zb button").forEach(function(b){b.className=b.dataset.o===o?"on":""});rg()}else{var i=sel.indexOf(o);if(i>=0){sel.splice(i,1);btn.className=""}else{if(sel.length>=6){alert("Max 6");return}sel.push(o);btn.className="cmp"}rg()}}
-function rg(){var info=document.getElementById("gi");if(gCh){gCh.destroy();gCh=null}var tb=document.getElementById("tbG");if(!sel.length){info.textContent="Seleccione";tb.innerHTML="";return}
-if(mode==="s"){var o=sel[0],s=D.gs[o];info.textContent=o+" · n="+s.n+" · prom="+s.a;
-gCh=new Chart(document.getElementById("a3"),{type:"bar",data:{labels:s.l,datasets:[{type:"bar",label:"Cd (barras)",data:s.c,backgroundColor:"rgba(21,101,192,.55)",borderWidth:0,maxBarThickness:22,order:2},{type:"line",label:"Tendencia",data:s.c,borderColor:"#c62828",backgroundColor:"transparent",borderWidth:2.5,pointRadius:4,pointBackgroundColor:"#c62828",tension:.25,order:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:"top",labels:{font:{size:11}}},datalabels:{display:function(c){return c.datasetIndex===0&&c.dataset.data.length<=20},anchor:"end",align:"top",font:{weight:"700",size:9},formatter:function(v){return v!=null?v.toFixed(2):""}}},scales:{y:{beginAtZero:true,title:{display:true,text:"Cd (mg/kg)"}},x:{ticks:{maxRotation:45,font:{size:9},callback:function(v){var l=this.getLabelForValue(v);return l&&l.length>18?l.substring(0,16)+"…":l}}}}});
-tb.innerHTML=(s.all||s.l.map(function(l,i){return{l:l,c:s.c[i]}})).map(function(d){return "<tr><td>"+d.l+"</td><td class=n>"+(d.c==null||d.c==="Sin muestra"?'<span class="sin">Sin muestra</span>':d.c)+"</td></tr>"}).join("");}
+function rg(){var info=document.getElementById("gi");if(gCh){gCh.destroy();gCh=null}var tb=document.getElementById("tbG");if(!sel.length){if(info)info.textContent="Seleccione";if(tb)tb.innerHTML="";return}
+if(mode==="s"){var o=sel[0],s=D.gs[o];if(info)info.textContent=o+" · n="+s.n+" · prom="+s.a;
+gCh=new Chart(document.getElementById("a3"),{type:"bar",data:{labels:s.l,datasets:[{type:"bar",label:"Cd (barras)",data:s.c,backgroundColor:"rgba(21,101,192,.55)",borderWidth:0,maxBarThickness:22,order:2},{type:"line",label:"Tendencia",data:s.c,borderColor:"#c62828",backgroundColor:"transparent",borderWidth:2.5,pointRadius:4,pointBackgroundColor:"#c62828",tension:.25,order:1}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:"top"},datalabels:{display:function(c){return c.datasetIndex===0&&c.dataset.data.length<=20},anchor:"end",align:"top",font:{weight:"700",size:9},formatter:function(v){return v!=null?v.toFixed(2):""}}},scales:{y:{beginAtZero:true,title:{display:true,text:"Cd (mg/kg)"}},x:{ticks:{maxRotation:45,font:{size:9}}}}});
+if(tb)tb.innerHTML=(s.all||s.l.map(function(l,i){return{l:l,c:s.c[i]}})).map(function(d){return "<tr><td>"+d.l+"</td><td class=n>"+(d.c==null||d.c==="Sin muestra"?'<span class="sin">Sin muestra</span>':d.c)+"</td></tr>"}).join("");}
 else{var mx=0;sel.forEach(function(o){mx=Math.max(mx,D.gs[o].c.length)});var labs=[];for(var i=0;i<mx;i++)labs.push("M"+(i+1));
-var ds=sel.map(function(o,i){var s=D.gs[o],d=s.c.slice();while(d.length<mx)d.push(null);return{label:o+"("+s.n+")",data:d,borderColor:COL[i%COL.length],backgroundColor:"transparent",borderWidth:2.5,pointRadius:3,tension:.2,spanGaps:true}});
-info.textContent="Comparando "+sel.length;
+var ds=sel.map(function(o,i){var s=D.gs[o],d=s.c.slice();while(d.length<mx)d.push(null);return{label:o+"("+s.n+")",data:d,borderColor:COL[i%COL.length],borderWidth:2.5,pointRadius:3,tension:.2,spanGaps:true}});
+if(info)info.textContent="Comparando "+sel.length;
 gCh=new Chart(document.getElementById("a3"),{type:"line",data:{labels:labs,datasets:ds},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"top"}},scales:{y:{beginAtZero:true,title:{display:true,text:"Cd (mg/kg)"}}}}});
-tb.innerHTML=sel.map(function(o){return "<tr><td colspan=2><b>"+o+"</b> (n="+D.gs[o].n+", prom="+D.gs[o].a+")</td></tr>"}).join("");}}
-document.getElementById("ms").onclick=function(){mode="s";this.className="on";document.getElementById("mc").className="";document.getElementById("gh").textContent="Clic en una zona. Barras + línea (desmarque en leyenda para ver solo línea).";sel=[];document.querySelectorAll("#zb button").forEach(function(b){b.className=""});if(D.go[0]){sel=[D.go[0]];var f=document.querySelector('#zb button[data-o="'+D.go[0]+'"]');if(f)f.className="on"}rg()};
-document.getElementById("mc").onclick=function(){mode="c";this.className="on";document.getElementById("ms").className="";document.getElementById("gh").textContent="Seleccione 2 a 6 origenes para comparar.";sel=[];document.querySelectorAll("#zb button").forEach(function(b){b.className=""});rg()};
-bz();if(D.go[0]){sel=[D.go[0]];var f=document.querySelector('#zb button[data-o="'+D.go[0]+'"]');if(f)f.className="on";rg()}
-(function(){var labs=D.al.map(function(d){return d.l});var vals=D.al.map(function(d){return d.c});var cols=D.al.map(function(d){return d.sin||d.c==null?"#bdbdbd":cc(d.c,1.2,.8)});hb("a4",labs,vals.map(function(v){return v==null?0:v}),cols);document.getElementById("tbA").innerHTML=D.al.map(function(d){return "<tr><td>"+d.l+"</td><td class=n>"+(d.c==null?'<span class="sin">Sin muestra</span>':d.c)+"</td></tr>"}).join("");})();
-hb("a5",D.po.map(function(d){return d.l}),D.po.map(function(d){return d.c}));
-document.getElementById("tbP").innerHTML=D.po.map(function(d){return "<tr><td>"+d.l+"</td><td class=n>"+d.c+"</td></tr>"}).join("");
-(function(){if(!D.pp||!D.pp.length)return;var labels=D.pp.map(function(d){return d.l});var datasets=[{label:"2,4-D",data:D.pp.map(function(d){return d.d24||0}),backgroundColor:"#c62828",borderWidth:0,maxBarThickness:28},{label:"Chlorpyrifos",data:D.pp.map(function(d){return d.chl||0}),backgroundColor:"#1565c0",borderWidth:0,maxBarThickness:28}];new Chart(document.getElementById("a5p"),{type:"bar",data:{labels:labels,datasets:datasets},options:{indexAxis:"y",responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"top"},datalabels:{color:"#fff",font:{weight:"700",size:10},formatter:function(v){return v>0?v.toFixed(3):""}}},scales:{x:{stacked:true,beginAtZero:true,title:{display:true,text:"Plaguicidas (mg/kg)"}},y:{stacked:true}}}});document.getElementById("tbPP").innerHTML=D.pp.map(function(d){return "<tr><td>"+d.l+"</td><td>"+d.p+"</td></tr>"}).join("");})();
-hb("a6",D.ca.map(function(d){return d.l}),D.ca.map(function(d){return d.c}));
-document.getElementById("tbC").innerHTML=D.ca.map(function(d){return "<tr><td>"+d.l+"</td><td class=n>"+d.c+"</td></tr>"}).join("");
-(function(){var labels=D.tr.map(function(d){return d.l});var colors={"d24":"#c62828","chl":"#1565c0"};var datasets=(D.pest_keys||[]).map(function(pk){return{label:pk.n,data:D.tr.map(function(d){return d[pk.k]||0}),backgroundColor:colors[pk.k]||"#666",borderWidth:0,maxBarThickness:16}});new Chart(document.getElementById("a7"),{type:"bar",data:{labels:labels,datasets:datasets},options:{indexAxis:"y",responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"top"},datalabels:{color:"#fff",font:{weight:"700",size:9},formatter:function(v){return v>0?v.toFixed(3):""}}},scales:{x:{stacked:true,beginAtZero:true,title:{display:true,text:"Plaguicidas (mg/kg)"}},y:{stacked:true,ticks:{font:{size:9}}}}}});document.getElementById("tb2").innerHTML=D.tr.map(function(d){return "<tr><td>"+d.l+"</td><td>"+d.p+"</td></tr>"}).join("");})();
+if(tb)tb.innerHTML=sel.map(function(o){return "<tr><td colspan=2><b>"+o+"</b> (n="+D.gs[o].n+", prom="+D.gs[o].a+")</td></tr>"}).join("");}}
+var ms=document.getElementById("ms"),mc=document.getElementById("mc");
+if(ms)ms.onclick=function(){mode="s";this.className="on";if(mc)mc.className="";sel=[];document.querySelectorAll("#zb button").forEach(function(b){b.className=""});if(D.go&&D.go[0]){sel=[D.go[0]];var f=document.querySelector('#zb button[data-o="'+D.go[0]+'"]');if(f)f.className="on"}rg()};
+if(mc)mc.onclick=function(){mode="c";this.className="on";if(ms)ms.className="";sel=[];document.querySelectorAll("#zb button").forEach(function(b){b.className=""});rg()};
+bz();if(D.go&&D.go[0]){sel=[D.go[0]];var f=document.querySelector('#zb button[data-o="'+D.go[0]+'"]');if(f)f.className="on";rg()}
+if(D.al){(function(){var labs=D.al.map(function(d){return d.l});var vals=D.al.map(function(d){return d.c});var cols=D.al.map(function(d){return d.sin||d.c==null?"#bdbdbd":cc(d.c,1.2,.8)});hb("a4",labs,vals.map(function(v){return v==null?0:v}),cols);var tbA=document.getElementById("tbA");if(tbA)tbA.innerHTML=D.al.map(function(d){return "<tr><td>"+d.l+"</td><td class=n>"+(d.c==null?'<span class="sin">Sin muestra</span>':d.c)+"</td></tr>"}).join("");})();}
+if(D.po){hb("a5",D.po.map(function(d){return d.l}),D.po.map(function(d){return d.c}));var tbP=document.getElementById("tbP");if(tbP)tbP.innerHTML=D.po.map(function(d){return "<tr><td>"+d.l+"</td><td class=n>"+d.c+"</td></tr>"}).join("");}
+if(D.pp&&D.pp.length){(function(){var labels=D.pp.map(function(d){return d.l});var datasets=[{label:"2,4-D",data:D.pp.map(function(d){return d.d24||0}),backgroundColor:"#c62828",borderWidth:0,maxBarThickness:28},{label:"Chlorpyrifos",data:D.pp.map(function(d){return d.chl||0}),backgroundColor:"#1565c0",borderWidth:0,maxBarThickness:28}];new Chart(document.getElementById("a5p"),{type:"bar",data:{labels:labels,datasets:datasets},options:{indexAxis:"y",responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"top"},datalabels:{color:"#fff",font:{weight:"700",size:10},formatter:function(v){return v>0?v.toFixed(3):""}}},scales:{x:{stacked:true,beginAtZero:true,title:{display:true,text:"Plaguicidas (mg/kg)"}},y:{stacked:true}}}});var tbPP=document.getElementById("tbPP");if(tbPP)tbPP.innerHTML=D.pp.map(function(d){return "<tr><td>"+d.l+"</td><td>"+d.p+"</td></tr>"}).join("");})();}
+if(D.ca){hb("a6",D.ca.map(function(d){return d.l}),D.ca.map(function(d){return d.c}));var tbC=document.getElementById("tbC");if(tbC)tbC.innerHTML=D.ca.map(function(d){return "<tr><td>"+d.l+"</td><td class=n>"+d.c+"</td></tr>"}).join("");}
+if(D.tr){(function(){var labels=D.tr.map(function(d){return d.l});var colors={"d24":"#c62828","chl":"#1565c0"};var datasets=(D.pest_keys||[{k:"d24",n:"2,4-D"},{k:"chl",n:"Chlorpyrifos"}]).map(function(pk){return{label:pk.n,data:D.tr.map(function(d){return d[pk.k]||0}),backgroundColor:colors[pk.k]||"#666",borderWidth:0,maxBarThickness:16}});new Chart(document.getElementById("a7"),{type:"bar",data:{labels:labels,datasets:datasets},options:{indexAxis:"y",responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"top"},datalabels:{color:"#fff",font:{weight:"700",size:9},formatter:function(v){return v>0?v.toFixed(3):""}}},scales:{x:{stacked:true,beginAtZero:true,title:{display:true,text:"Plaguicidas (mg/kg)"}},y:{stacked:true,ticks:{font:{size:9}}}}}});var tb2=document.getElementById("tb2");if(tb2)tb2.innerHTML=D.tr.map(function(d){return "<tr><td>"+d.l+"</td><td>"+d.p+"</td></tr>"}).join("");})();}
 document.querySelectorAll(".tab").forEach(function(btn){btn.onclick=function(){document.querySelectorAll(".tab").forEach(function(b){b.className="tab"});document.querySelectorAll(".panel").forEach(function(p){p.className="panel"});btn.className="tab on";document.getElementById("p-"+btn.dataset.p).className="panel on"}});
 }
+if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",function(){setTimeout(start,300)});}else{setTimeout(start,300);}
 </script></body></html>
