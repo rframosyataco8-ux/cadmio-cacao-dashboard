@@ -59,14 +59,14 @@ footer{text-align:center;padding:12px;color:#888;font-size:.72rem}
 <div class="panel" id="p-polvo"><div class="card"><h2>Cacao en Polvo - Cadmio por lote</h2><div class="cb" style="height:320px"><canvas id="a5"></canvas></div></div></div>
 <div class="panel" id="p-cacaoalc"><div class="card"><h2>Cacao Alcalino - Cadmio por lote</h2><div class="cb" style="height:240px"><canvas id="a6"></canvas></div></div></div>
 <div class="panel" id="p-trozada">
-<div class="card"><h2>Torta Trozada - Plaguicidas por lote</h2><div class="cb"><canvas id="a7"></canvas></div></div>
-<div class="card"><h2>Detalle plaguicidas</h2><div class="scroll"><table><thead><tr><th>Lote</th><th>Plaguicidas</th><th>Suma</th></tr></thead><tbody id="tb2"></tbody></table></div></div>
+<div class="card"><h2>Torta Trozada - Plaguicidas por lote (lote + origen)</h2><div class="cb"><canvas id="a7"></canvas></div></div>
+<div class="card"><h2>Detalle plaguicidas</h2><div class="scroll"><table><thead><tr><th>Lote (origenes)</th><th>Plaguicida</th></tr></thead><tbody id="tb2"></tbody></table></div></div>
 </div>
 </main>
 <footer>Trazabilidad Cadmio y Plaguicidas · Exportadora Romex · 2026</footer>
 <script src="https://cdn.jsdelivr.net/gh/rframosyataco8-ux/cadmio-cacao-dashboard@main/data.js"></script>
 <script>
-if(typeof D==="undefined"){document.body.innerHTML="<p style='padding:40px;font-family:Arial'>Cargando datos... Recarga en 10s o descarga el archivo completo del chat.</p>";}
+if(typeof D==="undefined"){document.body.innerHTML="<p style='padding:40px;font-family:Arial'>Cargando datos... Recarga en unos segundos.</p>";}
 else{
 Chart.register(ChartDataLabels);
 const COL=["#1565c0","#c62828","#2e7d32","#ef6c00","#6a1b9a","#00838f","#ad1457","#558b2f"];
@@ -74,7 +74,7 @@ const C=D.ct;
 document.getElementById("k").innerHTML=[["torta","Torta"],["grano","Grano"],["alcalino","Alcalino"],["polvo","Polvo"],["cacao_alc","C.Alc"],["trozada","Trozada"]].map(function(p){return '<div class="kpi"><div style="font-size:.7rem;color:#666">'+p[1]+'</div><div class="v">'+C[p[0]]+'</div></div>'}).join("");
 Chart.defaults.font.family="Arial,Calibri,sans-serif";Chart.defaults.font.size=11;Chart.defaults.color="#444";
 function cc(v,h,m){return v>=h?"#c62828":v>=m?"#ef6c00":"#2e7d32"}
-function hb(id,L,V,cols,xt){return new Chart(document.getElementById(id),{type:"bar",data:{labels:L,datasets:[{data:V,backgroundColor:cols||V.map(function(v){return cc(v,1.2,.8)}),borderWidth:0,borderRadius:2,maxBarThickness:14}]},options:{indexAxis:"y",responsive:true,maintainAspectRatio:false,layout:{padding:{right:40}},plugins:{legend:{display:false},datalabels:{color:"#222",anchor:"end",align:"right",offset:3,font:{weight:"700",size:10},formatter:function(v){return typeof v==="number"?v.toFixed(2):v}}},scales:{x:{beginAtZero:true,grid:{color:"#eee"},title:{display:true,text:xt||"Cd (mg/kg)",font:{weight:"600"}}},y:{grid:{display:false},ticks:{font:{size:9}}}}}})}
+function hb(id,L,V,cols,xt){return new Chart(document.getElementById(id),{type:"bar",data:{labels:L,datasets:[{data:V,backgroundColor:cols||V.map(function(v){return cc(v,1.2,.8)}),borderWidth:0,borderRadius:2,maxBarThickness:14}]},options:{indexAxis:"y",responsive:true,maintainAspectRatio:false,layout:{padding:{right:40}},plugins:{legend:{display:false},datalabels:{color:"#222",anchor:"end",align:"right",offset:3,font:{weight:"700",size:10},formatter:function(v){return typeof v==="number"?(v<0.1?v.toFixed(3):v.toFixed(2)):v}}},scales:{x:{beginAtZero:true,grid:{color:"#eee"},title:{display:true,text:xt||"Cd (mg/kg)",font:{weight:"600"}}},y:{grid:{display:false},ticks:{font:{size:9}}}}}})}
 function lc(id,L,ds){return new Chart(document.getElementById(id),{type:"line",data:{labels:L,datasets:ds},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:"index",intersect:false},plugins:{legend:{display:ds.length>1,position:"top"},datalabels:{display:function(c){return c.dataset.data.length<=15},align:"top",font:{weight:"700",size:9},formatter:function(v){return typeof v==="number"?v.toFixed(2):v}}},scales:{y:{beginAtZero:true,grid:{color:"#eee"},title:{display:true,text:"Cd (mg/kg)"}},x:{grid:{display:false},ticks:{font:{size:8}}}}}})}
 hb("a1",D.tt.map(function(d){return d.l}),D.tt.map(function(d){return d.c}));
 hb("a2",D.to.map(function(d){return d.o}),D.to.map(function(d){return d.a}));
@@ -93,8 +93,10 @@ bz();if(D.go[0]){sel=[D.go[0]];var f=document.querySelector('#zb button[data-o="
 hb("a4",D.al.map(function(d){return d.l}),D.al.map(function(d){return d.c}));
 new Chart(document.getElementById("a5"),{type:"bar",data:{labels:D.po.map(function(d){return d.l}),datasets:[{data:D.po.map(function(d){return d.c}),backgroundColor:D.po.map(function(d){return cc(d.c,1.1,.9)}),borderWidth:0,borderRadius:2,maxBarThickness:32}]},options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:20}},plugins:{legend:{display:false},datalabels:{anchor:"end",align:"top",font:{weight:"700",size:10},formatter:function(v){return v.toFixed(2)}}},scales:{y:{beginAtZero:true,title:{display:true,text:"Cd (mg/kg)"}},x:{ticks:{maxRotation:45,font:{size:9}}}}}});
 hb("a6",D.ca.map(function(d){return d.l}),D.ca.map(function(d){return d.c}));
-hb("a7",D.tr.map(function(d){return d.l}),D.tr.map(function(d){return d.t}),D.tr.map(function(d){return d.t>0?"#c62828":"#90a4ae"}),"Suma plaguicidas");
-document.getElementById("tb2").innerHTML=D.tr.map(function(d){return "<tr><td>"+d.l+"</td><td>"+d.p+"</td><td class=n>"+d.t.toFixed(4)+"</td></tr>"}).join("");
+/* TORTA TROZADA: solo plaguicidas - barras por lote+origen */
+hb("a7",D.tr.map(function(d){return d.l}),D.tr.map(function(d){return d.t}),D.tr.map(function(d){return d.t>0?"#c62828":"#90a4ae"}),"Plaguicidas (mg/kg)");
+/* Tabla solo lote + plaguicida */
+document.getElementById("tb2").innerHTML=D.tr.map(function(d){return "<tr><td>"+d.l+"</td><td>"+d.p+"</td></tr>"}).join("");
 document.querySelectorAll(".tab").forEach(function(btn){btn.onclick=function(){document.querySelectorAll(".tab").forEach(function(b){b.className="tab"});document.querySelectorAll(".panel").forEach(function(p){p.className="panel"});btn.className="tab on";document.getElementById("p-"+btn.dataset.p).className="panel on"}});
 }
 </script></body></html>
